@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="confusionApp">
+
+<head>
+     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head
+         content must come *after* these tags -->
+    <title>Ristorante Con Fusion: Menu</title>
+        <!-- Bootstrap -->
+    <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../bower_components/bootstrap/dist/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="styles/bootstrap-social.css" rel="stylesheet">
+    <link href="styles/mystyles.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+    <div class="container">
+      <!-- TASK 1: set up the row to use the dishDetailController -->
+      <div class="row row-content" ng-controller="DishDetailController">
+        <div class="col-xs-12">
+          <!-- TASK 1: use the bootstrap media object to display dish info -->
+          <div class="media-left media-middle"><img class="media-object img-thumbnail" ng-src={{dish.image}} alt={{dish.name}}></div>
+          <div class="media-body">
+            <h2 class="media-heading">{{dish.name}}
+            <span class="label label-danger">{{dish.label}}</span>
+            <span class="badge">{{dish.price | currency}}</span></h2>
+            <p>{{dish.description}}</p>
+          </div>
+        </div>
+        <!-- TASK 3: ordering criteria input field -->
+        <div class="col-xs-9 col-xs-offset-1"><h4>Customer Comments <small style="padding-left: 2em">Sort by: <input type="text" ng-model="sorter"></small></h4></div>
+
+        <div ng-repeat="cmts in dish.comments|orderBy:sorter">
+          <div class="col-xs-9 col-xs-offset-1">
+            <!-- TASK 2: use bootstrap blockquote class for comments + author and date in footer -->
+            <blockquote>
+              <p>{{cmts.rating}} Stars</p>
+              <p>{{cmts.comment}}</p>
+              <!-- TASK 2: date should be formatted using the Angular date filter -->
+              <footer>{{cmts.author}}, {{cmts.date|date:'MMM. dd, yyyy'}}</footer>
+            </blockquote>
+          </div>
+        </div>
+
+        <div class="col-xs-9 col-xs-offset-1" ng-controller="DishCommentController">
+           	<ul class="list-unstyled" ng-show="!commentForm.author.$error.required && !commentForm.comment.$error.required && !commentForm.$pristine">
+           		<blockquote>
+            	<li>{{dishComment.rating}} Stars</li>
+            	<li>{{dishComment.comment}}</li>
+            	<!-- TASK 2: date should be formatted using the Angular date filter -->
+            	<footer>{{dishComment.author}}</footer>
+            	</blockquote>
+            </ul>
+            <form class="form-horizontal" name="commentForm" role="form" ng-submit="submitComment()" novalidate>
+            	<div class="form-group" ng-class="{'has-error':commentForm.author.$error.required && !commentForm.author.$pristine}">
+            		<label for="author" class="col-sm-3 control-label">Your Name</label>
+            		<div class="col-sm-7"><input type="text" class="form-control" id="author" name="author" placeholder="Enter Your Name" ng-model="dishComment.author" required>
+            		<span ng-show="commentForm.author.$error.required && !commentForm.author.$pristine" class="help-block">Your name is required.</span></div>
+            	</div>
+            	<div class="form-group">
+            		<label for="rating" class="col-sm-3 control-label" ng-model="dishComment.rating">Number of Stars</label>
+            		<div class="col-sm-7">
+            			<input type="radio" name="rating" value="1" ng-model="dishComment.rating"> 1&nbsp;&nbsp;
+            			<input type="radio" name="rating" value="2" ng-model="dishComment.rating"> 2&nbsp;&nbsp;
+            			<input type="radio" name="rating" value="3" ng-model="dishComment.rating"> 3&nbsp;&nbsp;
+            			<input type="radio" name="rating" value="4" ng-model="dishComment.rating"> 4&nbsp;&nbsp;
+            			<input type="radio" name="rating" value="5" ng-model="dishComment.rating" checked> 5
+            		</div>
+            	</div>
+            	<div class="form-group" ng-class="{'has-error':commentForm.comment.$error.required && !commentForm.comment.$pristine}">
+            		<label for="comment" class="col-sm-3 control-label">Your Comments</label>
+            		<div class="col-sm-7"><textarea name="comment" class="form-control" id="comment" rows="10" ng-model="dishComment.comment" required></textarea>
+            		<span ng-show="commentForm.comment.$error.required && !commentForm.comment.$pristine" class="help-block">Comment is required.</span></div>
+            	</div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-7">
+                        <button type="submit" class="btn btn-primary" ng-disabled="commentForm.$invalid">Submit Comment</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="scripts/app.js"></script>
+    <script src="scripts/controllers.js"></script>
+    <script src="scripts/services.js"></script>
+</body>
+
+</html>
